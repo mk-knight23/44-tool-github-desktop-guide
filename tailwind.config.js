@@ -7,8 +7,8 @@ export default {
     theme: {
         extend: {
             colors: {
-                git: "#f05032",
-                blueprint: "#1e293b",
+                git: "#ea4aaa", // Switching to a more "modern hub" vibrant pink/orange hybrid
+                blueprint: "#020617",
             },
         },
     },
