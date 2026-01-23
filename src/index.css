@@ -1,24 +1,25 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-git: #f05032;
+}
 
 @layer base {
   body {
-    @apply antialiased bg-[#1e293b] text-slate-300 font-sans;
+    @apply bg-[#0f172a] text-white antialiased selection:bg-git/30;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 }
 
-.blueprint-bg {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
+@layer components {
+  .blueprint-bg {
+    background-color: #0f172a;
+    background-image: linear-gradient(rgba(240, 80, 50, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(240, 80, 50, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
 
-.node-card {
-  @apply bg-slate-900 border-2 border-slate-700 rounded-lg p-6 hover:border-git/50 transition-all duration-300 relative;
-}
-
-.connector-line {
-  @apply absolute h-0.5 bg-slate-700 transition-all duration-500;
+  .node-card {
+    @apply p-8 bg-slate-900 border border-slate-700/50 rounded-[2rem] transition-all duration-500 hover:border-git/50;
+  }
 }

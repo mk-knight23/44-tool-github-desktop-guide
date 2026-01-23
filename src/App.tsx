@@ -164,7 +164,7 @@ export default function App() {
                         <Github className="w-5 h-5 text-git" />
                         <span className="text-xs font-bold uppercase tracking-widest text-white tracking-widest underline decoration-git underline-offset-4">GitFlow Repository</span>
                     </div>
-                    <p className="text-[10px] font-bold text-slate-600 uppercase tracking-[0.4em]">© 2024 MK_GITFLOW_SYSTEMS • 28/30 DISPATCHED</p>
+                    <p className="text-[10px] font-bold text-slate-600 uppercase tracking-[0.4em]">© 2026 GITFLOW // SYSTEMS • 28/30 DISPATCHED</p>
                     <div className="flex gap-6 opacity-30 group">
                         <Layers className="w-4 h-4 hover:text-git transition-colors cursor-pointer" />
                         <Globe className="w-4 h-4 hover:text-git transition-colors cursor-pointer" />
