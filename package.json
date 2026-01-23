@@ -1,35 +1,47 @@
 {
-  "name": "reminder",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.5.0",
-    "@testing-library/user-event": "^7.2.1",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-icons": "^3.11.0",
-    "react-scripts": "3.4.3"
-  },
+  "name": "28-github-desktop-tutorial",
+  "private": false,
+  "version": "2.1.0",
+  "description": "Interactive GitFlow schematic and tutorial portal modernized with React 19, Vite 6, and Tailwind CSS v4.",
+  "type": "module",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "CI= react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit"
   },
-  "eslintConfig": {
-    "extends": "react-app"
+  "keywords": [
+    "git",
+    "workflow",
+    "tutorial",
+    "react",
+    "tailwind",
+    "typescript"
+  ],
+  "author": "Kazi Musharraf",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mk-knight23/28-github-desktop-tutorial.git"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "homepage": "https://mk-knight23.github.io/28-github-desktop-tutorial/",
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.0.1",
+    "lucide-react": "^0.474.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwind-merge": "^2.6.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.11"
   }
 }
