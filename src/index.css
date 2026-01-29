@@ -1,25 +1,337 @@
 @import "tailwindcss";
 
+/* Documentation-First Design System */
+
 @theme {
-  --color-git: #f05032;
+  --color-doc-green: #238636;
+  --color-doc-green-hover: #2ea043;
+  --color-doc-blue: #0969da;
+  --color-doc-blue-hover: #218bff;
+  --color-doc-purple: #8957e5;
+  --color-doc-bg: #ffffff;
+  --color-doc-bg-alt: #f6f8fa;
+  --color-doc-border: #d0d7de;
+  --color-git: #f05232;
 }
 
 @layer base {
   body {
-    @apply bg-[#0f172a] text-white antialiased selection:bg-git/30;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    @apply bg-doc-bg text-[#24292f] antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   }
 }
 
 @layer components {
-  .blueprint-bg {
-    background-color: #0f172a;
-    background-image: linear-gradient(rgba(240, 80, 50, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(240, 80, 50, 0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
+  /* Documentation Layout */
+  .doc-layout {
+    @apply grid md:grid-cols-[280px_1fr] min-h-screen;
+  }
+
+  /* Sidebar */
+  .doc-sidebar {
+    @apply sticky top-0 h-screen overflow-y-auto py-8 px-4 border-r border-doc-border;
+    background: var(--doc-bg-alt);
+  }
+
+  /* Navigation Links */
+  .doc-nav-link {
+    @apply block px-3 py-2 text-sm text-[#24292f] no-underline rounded-lg transition-colors;
+  }
+
+  .doc-nav-link:hover {
+    @apply bg-[#e3ebf1];
+  }
+
+  .doc-nav-link.active {
+    @apply bg-[#e3ebf1] font-semibold;
+  }
+
+  .doc-nav-group {
+    @apply mt-6 mb-2;
+  }
+
+  .doc-nav-group-title {
+    @apply px-3 text-xs font-semibold text-[#57606a] uppercase tracking-wider mb-2;
+  }
+
+  /* Code Blocks */
+  .code-block {
+    @apply bg-[#24292f] text-[#e6edf3] p-4 rounded-lg overflow-x-auto text-sm;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  .code-inline {
+    @apply bg-[#afb8c133] text-[#24292f] px-1.5 py-0.5 rounded text-sm font-mono;
+  }
+
+  /* Primary Button */
+  .btn-doc-primary {
+    @apply inline-flex items-center gap-2 px-4 py-2 bg-doc-green text-white font-semibold text-sm rounded-lg border border-white/10 transition-colors;
+  }
+
+  .btn-doc-primary:hover {
+    @apply bg-doc-green-hover;
+  }
+
+  .btn-doc-secondary {
+    @apply inline-flex items-center gap-2 px-4 py-2 bg-white text-[#24292f] font-semibold text-sm rounded-lg border border-doc-border transition-colors;
+  }
+
+  .btn-doc-secondary:hover {
+    @apply bg-[#f3f4f6] border-[#babbbd];
+  }
+
+  /* Info Boxes */
+  .info-box {
+    @apply p-4 border-l-4 rounded-lg my-4;
+  }
+
+  .info-box.note {
+    @apply border-doc-blue bg-[#ddf4ff];
+  }
+
+  .info-box.warning {
+    @apply border-[#d29922] bg-[#fff8c5];
+  }
+
+  .info-box.tip {
+    @apply border-doc-green bg-[#dafbe1];
+  }
+
+  .info-box-title {
+    @apply font-semibold text-sm mb-1;
+  }
+
+  /* Table of Contents */
+  .doc-toc {
+    @apply sticky top-16 py-4 pl-4 border-l-2 border-doc-border hidden xl:block;
+  }
+
+  .toc-link {
+    @apply block py-1 text-sm text-[#57606a] no-underline hover:text-doc-blue;
+  }
+
+  /* Documentation Header */
+  .doc-header {
+    @apply border-b border-doc-border py-4 px-6 bg-white sticky top-0 z-40;
+  }
+
+  .doc-logo {
+    @apply flex items-center gap-3 text-xl font-semibold text-[#24292f] no-underline hover:text-[#24292f];
+  }
+
+  /* Search */
+  .doc-search {
+    @apply relative w-full max-w-md;
+  }
+
+  .doc-search-input {
+    @apply w-full pl-10 pr-4 py-2 bg-[#f6f8fa] border border-doc-border rounded-lg text-sm placeholder-[#57606a] focus:outline-none focus:ring-2 focus:ring-doc-blue focus:border-transparent;
+  }
+
+  .doc-search-icon {
+    @apply absolute left-3 top-1/2 -translate-y-1/2 text-[#57606a];
+  }
+
+  /* Breadcrumb */
+  .breadcrumb {
+    @apply flex items-center gap-2 text-sm text-[#57606a] mb-4;
+  }
+
+  .breadcrumb-link {
+    @apply hover:text-doc-blue hover:underline;
+  }
+
+  /* Content Area */
+  .doc-content {
+    @apply max-w-4xl py-8 px-6 lg:px-8;
+  }
+
+  .doc-content h1 {
+    @apply text-3xl font-semibold mb-4 pb-4 border-b border-doc-border;
+  }
+
+  .doc-content h2 {
+    @apply text-2xl font-semibold mt-8 mb-4 pb-2 border-b border-doc-border;
+  }
+
+  .doc-content h3 {
+    @apply text-xl font-semibold mt-6 mb-3;
+  }
+
+  .doc-content h4 {
+    @apply text-lg font-semibold mt-4 mb-2;
+  }
+
+  .doc-content p {
+    @apply my-4 leading-7 text-[#24292f];
+  }
+
+  .doc-content a {
+    @apply text-doc-blue hover:underline;
+  }
+
+  .doc-content ul,
+  .doc-content ol {
+    @apply my-4 pl-8 space-y-2;
+  }
+
+  .doc-content li {
+    @apply text-[#24292f];
+  }
+
+  .doc-content li::marker {
+    @apply text-[#57606a];
+  }
+
+  /* Tables */
+  .doc-table {
+    @apply w-full my-4 border border-doc-border rounded-lg overflow-hidden;
+  }
+
+  .doc-table th {
+    @apply bg-[#f6f8fa] px-4 py-2 text-left text-sm font-semibold border-b border-doc-border;
+  }
+
+  .doc-table td {
+    @apply px-4 py-2 text-sm border-b border-doc-border last:border-b-0;
+  }
+
+  /* Card */
+  .doc-card {
+    @apply bg-white border border-doc-border rounded-lg p-6 shadow-sm;
+  }
+
+  /* Badge */
+  .doc-badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold;
+  }
+
+  .doc-badge.green {
+    @apply bg-[#dafbe1] text-doc-green;
+  }
+
+  .doc-badge.blue {
+    @apply bg-[#ddf4ff] text-doc-blue;
+  }
+
+  .doc-badge.purple {
+    @apply bg-[#f5f0ff] text-doc-purple;
+  }
+
+  .doc-badge.gray {
+    @apply bg-[#f6f8fa] text-[#57606a];
+  }
+
+  /* Footer */
+  .doc-footer {
+    @apply border-t border-doc-border py-8 px-6 mt-16 bg-[#f6f8fa];
+  }
+
+  .doc-footer-content {
+    @apply max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4;
+  }
+
+  .doc-footer-links {
+    @apply flex gap-6 text-sm text-[#57606a];
+  }
+
+  .doc-footer-links a {
+    @apply hover:text-doc-blue hover:underline no-underline;
+  }
+
+  /* Schematic Grid (for workflow steps) */
+  .schematic-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 relative;
   }
 
   .node-card {
-    @apply p-8 bg-slate-900 border border-slate-700/50 rounded-[2rem] transition-all duration-500 hover:border-git/50;
+    @apply p-6 bg-slate-900 border border-slate-700/50 rounded-2xl transition-all duration-500 cursor-pointer hover:border-git/50;
+  }
+
+  .node-card.active {
+    @apply ring-2 ring-git border-git bg-slate-800 shadow-[0_0_30px_rgba(240,80,50,0.15)];
+  }
+
+  /* Blueprint Background */
+  .blueprint-bg {
+    background-color: #0f172a;
+    background-image:
+      linear-gradient(rgba(240, 80, 50, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(240, 80, 50, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+}
+
+/* GitHub Flavored Markdown Styles */
+.markdown-body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  margin-top: 24px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.markdown-body h1 {
+  font-size: 2em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--doc-border);
+}
+
+.markdown-body code {
+  padding: 0.2em 0.4em;
+  margin: 0;
+  font-size: 85%;
+  background-color: rgba(175,184,193,0.2);
+  border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, monospace;
+}
+
+.markdown-body pre {
+  padding: 16px;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  background-color: var(--code-bg);
+  border-radius: 6px;
+}
+
+.markdown-body pre code {
+  padding: 0;
+  background-color: transparent;
+  color: var(--code-text);
+}
+
+.markdown-body blockquote {
+  padding: 0 1em;
+  color: var(--doc-text-secondary);
+  border-left: 0.25em solid var(--doc-border);
+  margin: 0 0 16px 0;
+}
+
+/* Focus styles */
+*:focus-visible {
+  @apply outline-none ring-2 ring-doc-blue ring-offset-2;
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
