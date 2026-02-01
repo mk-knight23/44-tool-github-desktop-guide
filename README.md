@@ -1,6 +1,17 @@
-# GitFlow Documentation - GitHub Desktop Workflow Guide
+# GitFlow — GitHub Desktop Workflow Guide
 
 A comprehensive, interactive documentation site for learning the GitHub Desktop workflow. Built with React 18, Framer Motion, and featuring a clean documentation-first design with GitHub's visual language.
+
+## Recent Upgrades (v2.1.0)
+
+### Iterations 1-5: Complete Documentation Upgrade
+- Added "Made by MK — Musharraf Kazi" branding
+- Enhanced documentation-first design descriptions
+- Updated React 18 feature documentation
+- Documented accessibility features
+- Verified build successful
+
+---
 
 ## Documentation-First Theme
 
