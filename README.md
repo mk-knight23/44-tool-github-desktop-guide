@@ -129,3 +129,7 @@ This project is configured for deployment on three platforms:
 **Theme:** Documentation-First/Knowledge
 **License:** MIT
 **Author:** mk-knight23
+
+## AI-Assisted Development
+
+This project is configured with [Kilo Code Reviewer](https://kilo.code/) for AI-powered code reviews on all pull requests.
