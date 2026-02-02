@@ -13,9 +13,14 @@ import {
   Package,
   Settings,
   ArrowRight,
-  Shield
+  Shield,
+  Copy,
+  Check,
+  X,
+  Keyboard,
+  Command
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 const WORKFLOW_STEPS = [
   {
@@ -75,14 +80,229 @@ const DOCS_NAV = [
   }
 ];
 
+const KEYBOARD_SHORTCUTS = [
+  { key: '/', description: 'Focus search' },
+  { key: '?', description: 'Show keyboard shortcuts' },
+  { key: 'Esc', description: 'Close modal / Clear search' },
+  { key: 'j', description: 'Scroll down' },
+  { key: 'k', description: 'Scroll up' }
+];
+
+// Copy button component
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const copy = async () => {
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <button
+      onClick={copy}
+      className="p-2 hover:bg-slate-800 rounded-lg transition-colors text-slate-500 hover:text-git"
+      title="Copy to clipboard"
+    >
+      {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+    </button>
+  );
+}
+
+// Code block with copy functionality
+function CodeBlock({ lines }: { lines: string[] }) {
+  const codeText = lines.join('\n');
+
+  return (
+    <div className="bg-slate-950 rounded-lg overflow-hidden">
+      <div className="flex justify-between items-center px-4 py-2 border-b border-slate-800 bg-slate-900/50">
+        <span className="text-xs text-slate-500 font-mono">bash</span>
+        <CopyButton text={codeText} />
+      </div>
+      <div className="p-4 font-mono text-sm space-y-1">
+        {lines.map((line, i) => (
+          <div key={i} className={line.startsWith('#') ? 'text-git' : 'text-slate-300'}>
+            {line}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Search component
+function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const [query, setQuery] = useState('');
+
+  const sections = [
+    { title: 'Introduction', id: 'intro' },
+    { title: 'Installation', id: 'install' },
+    { title: 'Quick Start', id: 'quickstart' },
+    { title: 'Branching', id: 'branching' },
+    { title: 'Committing', id: 'committing' },
+    { title: 'Pull Requests', id: 'pullrequests' }
+  ];
+
+  const filtered = sections.filter(s =>
+    s.title.toLowerCase().includes(query.toLowerCase())
+  );
+
+  const handleSelect = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    onClose();
+    setQuery('');
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 bg-black/50 backdrop-blur-sm" onClick={onClose}>
+      <div className="w-full max-w-lg bg-slate-900 rounded-xl border border-slate-700 shadow-2xl overflow-hidden" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center gap-3 p-4 border-b border-slate-800">
+          <Search className="w-5 h-5 text-slate-500" />
+          <input
+            type="text"
+            placeholder="Search documentation..."
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            className="flex-1 bg-transparent text-white placeholder-slate-500 outline-none"
+            autoFocus
+          />
+          <kbd className="px-2 py-1 text-xs bg-slate-800 text-slate-400 rounded">ESC</kbd>
+        </div>
+        <div className="max-h-80 overflow-y-auto">
+          {filtered.map(section => (
+            <button
+              key={section.id}
+              onClick={() => handleSelect(section.id)}
+              className="w-full px-4 py-3 text-left hover:bg-slate-800 transition-colors flex items-center justify-between"
+            >
+              <span className="text-slate-300">{section.title}</span>
+              <ChevronRight className="w-4 h-4 text-slate-600" />
+            </button>
+          ))}
+          {filtered.length === 0 && (
+            <div className="px-4 py-8 text-center text-slate-500">No results found</div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Keyboard shortcuts modal
+function ShortcutsModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={onClose}>
+      <div className="w-full max-w-md bg-slate-900 rounded-xl border border-slate-700 shadow-2xl p-6" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <Keyboard className="w-5 h-5 text-git" />
+            Keyboard Shortcuts
+          </h3>
+          <button onClick={onClose} className="text-slate-500 hover:text-white">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <div className="space-y-3">
+          {KEYBOARD_SHORTCUTS.map(({ key, description }) => (
+            <div key={key} className="flex items-center justify-between">
+              <span className="text-slate-400">{description}</span>
+              <kbd className="px-3 py-1 text-sm bg-slate-800 text-white rounded border border-slate-700">{key}</kbd>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [activeStep, setActiveStep] = useState('init');
   const [activeSection, setActiveSection] = useState('intro');
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  // Scroll progress tracker
+  useEffect(() => {
+    const handleScroll = () => {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (window.scrollY / totalHeight) * 100;
+      setScrollProgress(progress);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === '/' && !searchOpen && !shortcutsOpen) {
+        e.preventDefault();
+        setSearchOpen(true);
+      } else if (e.key === '?' && !searchOpen && !shortcutsOpen) {
+        e.preventDefault();
+        setShortcutsOpen(true);
+      } else if (e.key === 'Escape') {
+        setSearchOpen(false);
+        setShortcutsOpen(false);
+      } else if (e.key === 'j' && !searchOpen && !shortcutsOpen) {
+        window.scrollBy({ top: 100, behavior: 'smooth' });
+      } else if (e.key === 'k' && !searchOpen && !shortcutsOpen) {
+        window.scrollBy({ top: -100, behavior: 'smooth' });
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [searchOpen, shortcutsOpen]);
+
+  // Update active section on scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            setActiveSection(`#${entry.target.id}`);
+          }
+        });
+      },
+      { rootMargin: '-20% 0px -80% 0px' }
+    );
+
+    document.querySelectorAll('section[id]').forEach(section => {
+      observer.observe(section);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const handleNavClick = useCallback((href: string) => {
+    setActiveSection(href);
+    const element = document.querySelector(href);
+    element?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
 
   return (
     <div className="min-h-screen blueprint-bg">
+      {/* Scroll Progress Bar */}
+      <div className="fixed top-0 left-0 right-0 h-1 bg-slate-800 z-50">
+        <motion.div
+          className="h-full bg-git"
+          style={{ width: `${scrollProgress}%` }}
+        />
+      </div>
+
+      {/* Modals */}
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+      <ShortcutsModal isOpen={shortcutsOpen} onClose={() => setShortcutsOpen(false)} />
+
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-700">
+      <header className="fixed top-1 left-0 right-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-700">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-git/20 rounded-lg border border-git/30">
@@ -110,10 +330,26 @@ function App() {
             ))}
           </div>
 
-          <button className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-black text-xs uppercase tracking-widest rounded-lg border border-slate-600 transition-all flex items-center gap-2">
-            <Book className="w-4 h-4" />
-            View Docs
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="p-2 text-slate-400 hover:text-white transition-colors"
+              title="Search (/)"
+            >
+              <Search className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setShortcutsOpen(true)}
+              className="p-2 text-slate-400 hover:text-white transition-colors"
+              title="Keyboard shortcuts (?)"
+            >
+              <Command className="w-5 h-5" />
+            </button>
+            <button className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-black text-xs uppercase tracking-widest rounded-lg border border-slate-600 transition-all flex items-center gap-2">
+              <Book className="w-4 h-4" />
+              View Docs
+            </button>
+          </div>
         </div>
       </header>
 
@@ -126,23 +362,34 @@ function App() {
                 <h3 className="doc-nav-group-title">{section.group}</h3>
                 <div className="space-y-1">
                   {section.links.map((link) => (
-                    <a
+                    <button
                       key={link.href}
-                      href={link.href}
-                      onClick={() => setActiveSection(link.href)}
-                      className={`doc-nav-link ${activeSection === link.href ? 'active' : ''}`}
+                      onClick={() => handleNavClick(link.href)}
+                      className={`w-full text-left doc-nav-link ${activeSection === link.href ? 'active' : ''}`}
                     >
                       {link.title}
-                    </a>
+                    </button>
                   ))}
                 </div>
               </div>
             ))}
           </nav>
+
+          {/* Search hint in sidebar */}
+          <div className="mt-8 pt-6 border-t border-slate-800">
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-500 hover:text-white bg-slate-800/50 hover:bg-slate-800 rounded-lg transition-colors"
+            >
+              <Search className="w-4 h-4" />
+              Search...
+              <kbd className="ml-auto px-1.5 py-0.5 text-xs bg-slate-700 rounded">/</kbd>
+            </button>
+          </div>
         </aside>
 
         {/* Main Content */}
-        <main className="pt-20 pb-20 max-w-5xl">
+        <main className="pt-24 pb-20 max-w-5xl">
           <div className="doc-content">
             {/* Breadcrumb */}
             <div className="breadcrumb">
@@ -154,7 +401,7 @@ function App() {
             </div>
 
             {/* Hero */}
-            <section id="intro" className="mb-12 scroll-mt-24">
+            <section id="intro" className="mb-12 scroll-mt-28">
               <div className="inline-flex items-center gap-2 px-3 py-1 bg-git/10 border border-git/20 rounded-full text-[10px] uppercase font-bold text-git mb-6">
                 <Zap className="w-3 h-3" />
                 Version 2.2.0
@@ -170,7 +417,7 @@ function App() {
             </section>
 
             {/* Installation Section */}
-            <section id="install" className="mb-16 scroll-mt-24">
+            <section id="install" className="mb-16 scroll-mt-28">
               <h3 className="text-2xl font-black text-white uppercase tracking-tight mb-6">
                 Installation
               </h3>
@@ -196,7 +443,7 @@ function App() {
             </section>
 
             {/* Quick Start Section */}
-            <section id="quickstart" className="mb-16 scroll-mt-24">
+            <section id="quickstart" className="mb-16 scroll-mt-28">
               <h3 className="text-2xl font-black text-white uppercase tracking-tight mb-6">
                 Quick Start
               </h3>
@@ -217,7 +464,7 @@ function App() {
             </section>
 
             {/* Branching Section */}
-            <section id="branching" className="mb-16 scroll-mt-24">
+            <section id="branching" className="mb-16 scroll-mt-28">
               <h3 className="text-2xl font-black text-white uppercase tracking-tight mb-6">
                 Branching
               </h3>
@@ -225,17 +472,12 @@ function App() {
                 <p className="text-slate-400 mb-4">
                   Branches allow you to work on features or fixes without affecting the main codebase.
                 </p>
-                <div className="bg-slate-950 rounded-lg p-4 font-mono text-sm">
-                  <div className="text-git"># Create a new branch</div>
-                  <div className="text-slate-300">git checkout -b feature/my-feature</div>
-                  <div className="text-git mt-2"># Switch between branches</div>
-                  <div className="text-slate-300">git checkout main</div>
-                </div>
+                <CodeBlock lines={['# Create a new branch', 'git checkout -b feature/my-feature', '# Switch between branches', 'git checkout main']} />
               </div>
             </section>
 
             {/* Committing Section */}
-            <section id="committing" className="mb-16 scroll-mt-24">
+            <section id="committing" className="mb-16 scroll-mt-28">
               <h3 className="text-2xl font-black text-white uppercase tracking-tight mb-6">
                 Committing
               </h3>
@@ -243,17 +485,12 @@ function App() {
                 <p className="text-slate-400 mb-4">
                   Commits are snapshots of your changes. Write clear, descriptive commit messages.
                 </p>
-                <div className="bg-slate-950 rounded-lg p-4 font-mono text-sm">
-                  <div className="text-git"># Stage changes</div>
-                  <div className="text-slate-300">git add filename.txt</div>
-                  <div className="text-git mt-2"># Commit with message</div>
-                  <div className="text-slate-300">git commit -m "Add new feature"</div>
-                </div>
+                <CodeBlock lines={['# Stage changes', 'git add filename.txt', '# Commit with message', 'git commit -m "Add new feature"']} />
               </div>
             </section>
 
             {/* Pull Requests Section */}
-            <section id="pullrequests" className="mb-16 scroll-mt-24">
+            <section id="pullrequests" className="mb-16 scroll-mt-28">
               <h3 className="text-2xl font-black text-white uppercase tracking-tight mb-6">
                 Pull Requests
               </h3>
