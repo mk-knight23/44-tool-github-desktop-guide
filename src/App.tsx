@@ -154,10 +154,10 @@ function App() {
             </div>
 
             {/* Hero */}
-            <section className="mb-12">
+            <section id="intro" className="mb-12 scroll-mt-24">
               <div className="inline-flex items-center gap-2 px-3 py-1 bg-git/10 border border-git/20 rounded-full text-[10px] uppercase font-bold text-git mb-6">
                 <Zap className="w-3 h-3" />
-                Version 2.4.0
+                Version 2.2.0
               </div>
               <h2 className="text-5xl md:text-7xl font-black text-white italic tracking-tighter uppercase leading-[0.9] mb-8">
                 Mastering the <br />
@@ -167,6 +167,107 @@ function App() {
                 A comprehensive deep-dive into the GitHub Desktop workflow. Follow the nodes
                 to understand how modern teams ship code with confidence.
               </p>
+            </section>
+
+            {/* Installation Section */}
+            <section id="install" className="mb-16 scroll-mt-24">
+              <h3 className="text-2xl font-black text-white uppercase tracking-tight mb-6">
+                Installation
+              </h3>
+              <div className="doc-card bg-slate-900 border-slate-700">
+                <p className="text-slate-400 mb-4">
+                  Download and install GitHub Desktop for your operating system. The application provides a visual interface for Git operations.
+                </p>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <a href="https://desktop.github.com/download/" target="_blank" rel="noopener noreferrer" className="p-4 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors">
+                    <span className="text-git font-bold">macOS</span>
+                    <p className="text-sm text-slate-500 mt-1">Download .dmg</p>
+                  </a>
+                  <a href="https://desktop.github.com/download/" target="_blank" rel="noopener noreferrer" className="p-4 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors">
+                    <span className="text-git font-bold">Windows</span>
+                    <p className="text-sm text-slate-500 mt-1">Download .exe</p>
+                  </a>
+                  <a href="https://desktop.github.com/download/" target="_blank" rel="noopener noreferrer" className="p-4 bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors">
+                    <span className="text-git font-bold">Linux</span>
+                    <p className="text-sm text-slate-500 mt-1">AppImage available</p>
+                  </a>
+                </div>
+              </div>
+            </section>
+
+            {/* Quick Start Section */}
+            <section id="quickstart" className="mb-16 scroll-mt-24">
+              <h3 className="text-2xl font-black text-white uppercase tracking-tight mb-6">
+                Quick Start
+              </h3>
+              <div className="space-y-4">
+                <div className="doc-card bg-slate-900 border-slate-700">
+                  <h4 className="text-lg font-bold text-white mb-2">1. Sign in to GitHub</h4>
+                  <p className="text-slate-400 text-sm">Open Preferences → Accounts and sign in with your GitHub account.</p>
+                </div>
+                <div className="doc-card bg-slate-900 border-slate-700">
+                  <h4 className="text-lg font-bold text-white mb-2">2. Clone or Create Repository</h4>
+                  <p className="text-slate-400 text-sm">Use File → Clone Repository or File → New Repository to get started.</p>
+                </div>
+                <div className="doc-card bg-slate-900 border-slate-700">
+                  <h4 className="text-lg font-bold text-white mb-2">3. Make Your First Commit</h4>
+                  <p className="text-slate-400 text-sm">Make changes, write a summary, and click "Commit to main".</p>
+                </div>
+              </div>
+            </section>
+
+            {/* Branching Section */}
+            <section id="branching" className="mb-16 scroll-mt-24">
+              <h3 className="text-2xl font-black text-white uppercase tracking-tight mb-6">
+                Branching
+              </h3>
+              <div className="doc-card bg-slate-900 border-slate-700">
+                <p className="text-slate-400 mb-4">
+                  Branches allow you to work on features or fixes without affecting the main codebase.
+                </p>
+                <div className="bg-slate-950 rounded-lg p-4 font-mono text-sm">
+                  <div className="text-git"># Create a new branch</div>
+                  <div className="text-slate-300">git checkout -b feature/my-feature</div>
+                  <div className="text-git mt-2"># Switch between branches</div>
+                  <div className="text-slate-300">git checkout main</div>
+                </div>
+              </div>
+            </section>
+
+            {/* Committing Section */}
+            <section id="committing" className="mb-16 scroll-mt-24">
+              <h3 className="text-2xl font-black text-white uppercase tracking-tight mb-6">
+                Committing
+              </h3>
+              <div className="doc-card bg-slate-900 border-slate-700">
+                <p className="text-slate-400 mb-4">
+                  Commits are snapshots of your changes. Write clear, descriptive commit messages.
+                </p>
+                <div className="bg-slate-950 rounded-lg p-4 font-mono text-sm">
+                  <div className="text-git"># Stage changes</div>
+                  <div className="text-slate-300">git add filename.txt</div>
+                  <div className="text-git mt-2"># Commit with message</div>
+                  <div className="text-slate-300">git commit -m "Add new feature"</div>
+                </div>
+              </div>
+            </section>
+
+            {/* Pull Requests Section */}
+            <section id="pullrequests" className="mb-16 scroll-mt-24">
+              <h3 className="text-2xl font-black text-white uppercase tracking-tight mb-6">
+                Pull Requests
+              </h3>
+              <div className="doc-card bg-slate-900 border-slate-700">
+                <p className="text-slate-400 mb-4">
+                  Pull requests let you tell others about changes you've pushed to a branch.
+                </p>
+                <ul className="text-slate-400 list-disc list-inside space-y-2">
+                  <li>Click "Create Pull Request" in GitHub Desktop</li>
+                  <li>Add a title and description</li>
+                  <li>Request reviews from team members</li>
+                  <li>Merge after approval</li>
+                </ul>
+              </div>
             </section>
 
             {/* Workflow Schematic */}
@@ -329,9 +430,14 @@ function App() {
               GitFlow Documentation
             </span>
           </div>
-          <p className="text-[10px] font-bold text-slate-600 uppercase tracking-[0.4em]">
-            © 2026 GITFLOW SYSTEMS • 28/30 DISPATCHED
-          </p>
+          <div className="text-center">
+            <p className="text-[10px] font-bold text-git uppercase tracking-[0.4em]">
+              Made by MK — Musharraf Kazi
+            </p>
+            <p className="text-[10px] font-bold text-slate-600 uppercase tracking-[0.4em] mt-1">
+              © 2026 GITFLOW SYSTEMS
+            </p>
+          </div>
           <div className="flex gap-6 opacity-30">
             <FileText className="w-4 h-4 hover:text-git transition-colors cursor-pointer" />
             <Package className="w-4 h-4 hover:text-git transition-colors cursor-pointer" />
