@@ -23,7 +23,11 @@ import {
   CodeBlock,
   SearchModal,
   ShortcutsModal,
-  ProgressBar
+  ProgressBar,
+  ThemeToggle,
+  BookmarksPanel,
+  BookmarkButton,
+  PrintButton
 } from './components';
 
 const WORKFLOW_STEPS = [
