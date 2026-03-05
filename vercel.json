@@ -1,5 +1,20 @@
 {
-    "buildCommand": "npm run build",
-    "outputDirectory": "dist",
-    "framework": "vite"
+  "version": 2,
+  "name": "tool-github-desktop-guide",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "github": {
+    "enabled": true,
+    "autoAlias": true
+  }
 }
